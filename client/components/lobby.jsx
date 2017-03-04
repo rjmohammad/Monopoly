@@ -68,9 +68,10 @@ class Lobby extends Component {
     })
 
     sock.socket.on('your index', (data) => {
-      console.log('myIndex', data)
       this.props.dispatch(setMyIndex(data.index))
-      this.setState({games: data.newGame})
+      if (data.newGame) {
+        this.setState({games: data.newGame})
+      }
     })
 
     sock.socket.on('player joined', (data) => {
