@@ -63,6 +63,7 @@ class DiceRoll extends Component {
 
   componentDidMount () {
     sock.socket.on('yourTurn', (data) => {
+      console.log(data)
       if (this.props.bankruptcyButton === false) {
         window.localStorage.setItem('pIndex', data.index)
         this.props.dispatch(setIndex(data.index))

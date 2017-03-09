@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {List, Segment, Divider} from 'semantic-ui-react'
+import {List, Segment, Divider, Button} from 'semantic-ui-react'
 import sock from '../helper/socket'
 import escape from 'lodash.escape'
 class Chat extends Component {
@@ -39,7 +39,7 @@ class Chat extends Component {
         <Divider />
         <List items={messages} />
         <input id='chatBox' name='chatBox' type='text' />
-        <button onClick={this.submitMessage}>Send</button>
+        <Button onClick={this.submitMessage}>Send</Button>
       </Segment>
     )
   }
