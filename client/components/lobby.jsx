@@ -54,18 +54,18 @@ class Lobby extends Component {
     axios.post('/tokenauth', { token: window.localStorage.token })
       .then((res) => {
         if (res.data.validToken) {
-          this.setState({auth: true})
+          this.setState({ auth: true })
         }
       })
       .catch((err) => console.error(err))
       .then(() => {
-        this.setState({promise: true})
+        this.setState({ promise: true })
       })
   }
 
   componentDidMount () {
     sock.socket.on('user joined', (data) => {
-      this.setState({onlineUsers: data})
+      this.setState({ onlineUsers: data })
     })
     sock.socket.on('get games', (data) => {
       this.setState({ games: data })
@@ -84,7 +84,7 @@ class Lobby extends Component {
     sock.socket.on('your index', (data) => {
       this.props.dispatch(setMyIndex(data.index))
       if (data.newGame) {
-        this.setState({games: data.newGame})
+        this.setState({ games: data.newGame })
       }
     })
 
@@ -120,12 +120,12 @@ class Lobby extends Component {
   }
 
   newGame () {
-    this.setState({showNewGameButton: false})
+    this.setState({ showNewGameButton: false })
     sock.newGame({ username: this.props.username, userID: this.props.userID, picture: window.localStorage.picture })
   }
 
   joinGame () {
-    this.setState({showNewGameButton: false})
+    this.setState({ showNewGameButton: false })
     this.setState({ join: false })
     sock.join({ username: this.props.username, userID: this.props.userID, gameID: this.props.gameID, picture: window.localStorage.picture })
   }
@@ -144,7 +144,7 @@ class Lobby extends Component {
   }
 
   message (e) {
-    this.setState({userMessage: e.target.value})
+    this.setState({ userMessage: e.target.value })
   }
 
   handleGameClick (gameID) {
@@ -174,92 +174,96 @@ class Lobby extends Component {
   }
 
   setShowGames (bool) {
-    this.setState({showGames: bool})
+    this.setState({ showGames: bool })
   }
   render () {
     return (
       <MuiThemeProvider>
         <div>
-          <Nav />
-          {this.state.startGame ? <Redirect to={{ pathname: '/board' }} /> : null}
-          <div className='lobby' >
-            <div className='chat'>
-              <div className='chat-container'>
-                <Paper className='paper-chat' zDepth={5}>
-                  <Toolbar className='headers' >
-                    <ToolbarTitle text='CHAT' className='title' />
-                  </Toolbar>
-                  <div className='messages'>
-                    { this.state.messages.map((msg, i) => {
-                      return <List key={i}>
-                        <List.Item>
-                          <Image avatar src={`${msg.picture}`} />
-                          <List.Content>
-                            <List.Header as='a'>{msg.sender}</List.Header>
-                            <List.Description>{msg.message}</List.Description>
-                          </List.Content>
-                        </List.Item>
-                      </List>
-                    })}
+          {this.state.promise
+            ? <div>
+              { this.state.auth ? null : <Redirect to={{ pathname: '/' }} /> }
+              <Nav />
+              {this.state.startGame ? <Redirect to={{ pathname: '/board' }} /> : null}
+              <div className='lobby' >
+                <div className='chat'>
+                  <div className='chat-container'>
+                    <Paper className='paper-chat' zDepth={5}>
+                      <Toolbar className='headers' >
+                        <ToolbarTitle text='CHAT' className='title' />
+                      </Toolbar>
+                      <div className='messages'>
+                        {this.state.messages.map((msg, i) => {
+                          return <List key={i}>
+                            <List.Item>
+                              <Image avatar src={`${msg.picture}`} />
+                              <List.Content>
+                                <List.Header as='a'>{msg.sender}</List.Header>
+                                <List.Description>{msg.message}</List.Description>
+                              </List.Content>
+                            </List.Item>
+                          </List>
+                        })}
+                      </div>
+                      <Input fluid placeholder='Type Here' id='message' onChange={this.message} action={<Button size='large' color='red' onClick={(e) => this.submitMessage(e)}> SEND </Button>} />
+                    </Paper>
                   </div>
-                  <Input fluid placeholder='Type Here' id='message' onChange={this.message} action={<Button size='large' color='red' onClick={(e) => this.submitMessage(e)}> SEND </Button>} />
-                </Paper>
-              </div>
-            </div>
-            <div className='col'>
-              <div className='users'>
-                <div className='user-container'>
-                  <Paper className='paper-chat' zDepth={5}>
-                    <Toolbar className='headers'>
-                      <ToolbarTitle text='ONLINE USERS' className='title' />
-                    </Toolbar>
-                    { Object.keys(this.state.onlineUsers).map((user, i) => {
-                      return <List key={i}>
-                        <List.Item>
-                          <Image avatar src={`${this.state.onlineUsers[user].picture}`} />
-                          <List.Description as='a'>{this.state.onlineUsers[user].displayName}</List.Description>
-                        </List.Item>
-                      </List>
-                    })}
-                  </Paper>
                 </div>
-              </div>
-              <div className='game'>
-                <div className='user-container'>
-                  <Paper className='paper-chat' zDepth={5}>
-                    <Toolbar className='headers'>
-                      <ToolbarTitle text='GAMES' className='title' />
-                    </Toolbar>
-                    <Menu widths={2} className='gameMenu'>
-                      <Menu.Item name='Join New Games' onClick={() => this.setShowGames(true)} />
-                      <Menu.Item name='Resume Old Games' onClick={() => this.setShowGames(false)} />
-                    </Menu>
-                    {this.state.showGames ? <div className='showMenuGame' ><div className='show-games'>
-                      {Object.keys(this.state.games).map((item) => {
-                        return <Button fluid key={item} onClick={() => { this.handleGameClick(this.state.games[item]) }}> GAME: {item} </Button>
-                      })}
+                <div className='col'>
+                  <div className='users'>
+                    <div className='user-container'>
+                      <Paper className='paper-chat' zDepth={5}>
+                        <Toolbar className='headers'>
+                          <ToolbarTitle text='ONLINE USERS' className='title' />
+                        </Toolbar>
+                        {Object.keys(this.state.onlineUsers).map((user, i) => {
+                          return <List key={i}>
+                            <List.Item>
+                              <Image avatar src={`${this.state.onlineUsers[user].picture}`} />
+                              <List.Description as='a'>{this.state.onlineUsers[user].displayName}</List.Description>
+                            </List.Item>
+                          </List>
+                        })}
+                      </Paper>
                     </div>
+                  </div>
+                  <div className='game'>
+                    <div className='user-container'>
+                      <Paper className='paper-chat' zDepth={5}>
+                        <Toolbar className='headers'>
+                          <ToolbarTitle text='GAMES' className='title' />
+                        </Toolbar>
+                        <Menu widths={2} className='gameMenu'>
+                          <Menu.Item name='Join New Games' onClick={() => this.setShowGames(true)} />
+                          <Menu.Item name='Resume Old Games' onClick={() => this.setShowGames(false)} />
+                        </Menu>
+                        {this.state.showGames ? <div className='showMenuGame' ><div className='show-games'>
+                          {Object.keys(this.state.games).map((item) => {
+                            return <Button fluid key={item} onClick={() => { this.handleGameClick(this.state.games[item]) }}> GAME: {item} </Button>
+                          })}
+                        </div>
 
-                      {this.state.start ? <div className='start'><Button color='green' size='massive' onClick={this.startGame}> START GAME </Button></div> : this.state.showNewGameButton ? <Button.Group size='massive' fluid>
-                        <Button color='green' onClick={() => this.newGame()}>NEW GAME</Button>
-                        <Button.Or />
-                        <Button color='black' disabled={this.state.join} onClick={() => this.joinGame()}>JOIN</Button>
-                      </Button.Group> : this.state.join
-                      ? <Message className={'message'}>
-                        <Message.Header>WAITING FOR MORE PLAYERS</Message.Header>
-                      </Message> : <Message className={'message'}>
-                        <Message.Header>WAITING FOR PLAYERS TO JOIN</Message.Header>
-                      </Message>} </div>
-                       : <div className='showMenuGame' >
-                         <LoadGame pendingGames={this.state.pendingGames} load={this.state.resume} />
-                       </div>
-                  }
-                  </Paper>
+                          {this.state.start ? <div className='start'><Button color='green' size='massive' onClick={this.startGame}> START GAME </Button></div> : this.state.showNewGameButton ? <Button.Group size='massive' fluid>
+                            <Button color='green' onClick={() => this.newGame()}>NEW GAME</Button>
+                            <Button.Or />
+                            <Button color='black' disabled={this.state.join} onClick={() => this.joinGame()}>JOIN</Button>
+                          </Button.Group> : this.state.join
+                              ? <Message className={'message'}>
+                                <Message.Header>WAITING FOR MORE PLAYERS</Message.Header>
+                              </Message> : <Message className={'message'}>
+                                <Message.Header>WAITING FOR PLAYERS TO JOIN</Message.Header>
+                              </Message>} </div>
+                          : <div className='showMenuGame' >
+                            <LoadGame pendingGames={this.state.pendingGames} load={this.state.resume} />
+                          </div>
+                        }
+                      </Paper>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <Toast message={this.state.comment} show={this.state.showToast} />
+              <Toast message={this.state.comment} show={this.state.showToast} />
+            </div> : null}
         </div>
       </MuiThemeProvider>
     )
