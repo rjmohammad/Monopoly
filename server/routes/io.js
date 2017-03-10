@@ -159,6 +159,9 @@ module.exports = (io) => {
       socket.broadcast.to(data.playerSocket).emit('offer for you', { position: data.position, socket: socket.id, offer: data.offer, offerIndex: data.offerIndex })
     })
 
+    socket.on('new-game-message', (data) => {
+      
+    })
     socket.on('disconnect', () => {
       const id = socket.nickname
       const gameID = socket.roomOwner

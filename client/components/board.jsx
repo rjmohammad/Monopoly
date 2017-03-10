@@ -76,17 +76,17 @@ class Board extends Component {
   }
 
   componentWillMount () {
-    axios.post('/tokenauth', { token: window.localStorage.token })
-      .then((res) => {
-        if (res.data.validToken && this.props.gameID !== undefined) {
-          this.setState({auth: true})
+    // axios.post('/tokenauth', { token: window.localStorage.token })
+    //   .then((res) => {
+    //     if (res.data.validToken && this.props.gameID !== undefined) {
+    //       this.setState({auth: true})
           sock.init({ gameID: this.props.gameID, index: this.props.playerIndex })
-        }
-      })
-      .catch((err) => console.error(err))
-      .then(() => {
-        this.setState({promise: true})
-      })
+    //     }
+    //   })
+    //   .catch((err) => console.error(err))
+    //   .then(() => {
+    //     this.setState({promise: true})
+    //   })
   }
 
   componentDidMount () {
@@ -121,9 +121,7 @@ class Board extends Component {
   render () {
     return (
       <div>
-        { this.state.promise
-      ? <div>
-        { this.state.auth ? null : <Redirect to={{ pathname: '/' }} /> }
+        { /* this.state.auth ? null : <Redirect to={{ pathname: '/' }} /> */}
         <Nav />
         <div className='left'> <Player name={this.props.username} dice={this.dice} piece='Hat' setComment={this.setComment} setHouse={this.setHouse} />
           {
@@ -306,7 +304,6 @@ class Board extends Component {
             </div>
           </div>
         </div>
-      </div> : null }
       </div>
     )
   }

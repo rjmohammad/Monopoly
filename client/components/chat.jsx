@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {List, Segment, Divider, Button} from 'semantic-ui-react'
+import {List, Segment, Divider, Button, Input} from 'semantic-ui-react'
 import sock from '../helper/socket'
 import escape from 'lodash.escape'
 class Chat extends Component {
@@ -12,7 +12,7 @@ class Chat extends Component {
     this.submitMessage = this.submitMessage.bind(this)
   }
   componentDidMount () {
-    sock.socket.on('receive-message', (msgInfo) => {
+    sock.socket.on('receive-game-message', (msgInfo) => {
       let messages = this.state.messages
       messages.push(msgInfo)
       this.setState({ messages: messages })
@@ -21,13 +21,14 @@ class Chat extends Component {
 
   submitMessage () {
     let message = escape(document.getElementById('chatBox').value)
+    console.log(message)
     document.getElementById('chatBox').value = ''
     let sender = this.state.name
     let room = 'board'
     let msgInfo = {sender: sender, message: message, room: room}
 
     JSON.stringify(msgInfo)
-    sock.socket.emit('new-message', escape(msgInfo))
+    sock.socket.emit('new-game-message', escape(msgInfo))
   }
 
   render () {
@@ -39,7 +40,7 @@ class Chat extends Component {
         <Divider />
         <List items={messages} />
         <input id='chatBox' name='chatBox' type='text' />
-        <Button onClick={this.submitMessage}>Send</Button>
+        <Button size='mini' onClick={this.submitMessage}>Send</Button>
       </Segment>
     )
   }

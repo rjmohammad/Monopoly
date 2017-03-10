@@ -516,7 +516,7 @@ class DiceRoll extends Component {
                     setState={this.setStates}
                     setHouse={this.props.setHouse}
                      /> : null}</span> : null} </div>
-                })} /></div>}
+            })} /></div>}
           </div>
         </div>
         <Toast message={this.state.comment} show={this.state.showToast} />
