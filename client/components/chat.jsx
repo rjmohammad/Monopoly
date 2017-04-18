@@ -24,7 +24,7 @@ class Chat extends Component {
     console.log(message)
     document.getElementById('chatBox').value = ''
     let sender = this.state.name
-    let room = 'board'
+    let room = this.props.gameID
     let msgInfo = {sender: sender, message: message, room: room}
 
     JSON.stringify(msgInfo)
